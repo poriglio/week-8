@@ -1,0 +1,26 @@
+
+		<h1>AJAX Heroes</h1>
+		<h2>{{greeting}}</h2>
+		<form ng-submit="createHero()">
+			<input type="text" ng-model="newHero.name" placeholder="name">
+			<input type="text" ng-model="newHero.powers" placeholder="powers">
+			<input type="text" ng-model="newHero.HQ" placeholder="HQ">
+			<input type="text" ng-model="newHero.alignment" placeholder="alignment">
+			<input type="text" ng-model="newHero.powerLevel" placeholder="powerLevel">
+			<input type="text" ng-model="newHero.sidekick" placeholder="sidekick">
+			<input type="text" ng-model="newHero.weaknesses" placeholder="weaknesses">
+			<input type="text" ng-model="newHero.costume" placeholder="costume">
+			<input type="text" ng-model="newHero.archNemesis" placeholder="archNemesis">
+			<input type="submit">
+		</form>
+		<ul ng-repeat="hero in heroes">
+			<li>{{hero.name}}</li>
+			<li>{{hero.HQ}}</li>
+			<li>{{hero.archNemesis}}</li>
+			<li>{{hero.powerLevel}}</li>
+			<li>{{hero.weaknesses}}</li>
+			<li>{{hero.costume}}</li>
+			<li>{{hero.powers}}</li>
+			<li>{{hero.alignment}}</li>
+			<li>{{hero.sidekick}}</li>
+		</ul>
