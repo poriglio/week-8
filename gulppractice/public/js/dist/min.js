@@ -1,0 +1,1 @@
+var seven=function(){return"candy corn"};seven();var eight=function(){return"this is working"},sweetFunction=function(){return"I have a sweet tooth"};sweetFunction();
