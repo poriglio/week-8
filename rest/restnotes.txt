@@ -1,0 +1,147 @@
+What is REST?
+REpresentational State Transfer
+
+It is an architectural style for building APIs.
+
+A software architecture style for creating scalable web services that make resources available to clients.
+
+REST is NOT a specific technology/tool/library.
+REST is not a standardized protocol.
+
+The following are IDEALS.
+It's not reasonable for an API to be 100% RESTful.
+
+A RESTful API should return JSON data.
+(It CAN return XML, but... that's disappointing.)
+If someone asks you this at a job interview, you CAN give a nuanced answer...
+but it's better to just say JSON.
+
+REST APIs should be stateless.
+I.E. it should not have to know anything about you
+or remember any previous requests.
+It should not need to recognize users.
+The current request should give the API
+EVERYTHING it needs to respond to the request.
+
+
+The different request types have a lot to do with people's expectations.
+What do people expect from each of them?
+
+Idempotency : an action is idempotent if doing it once
+has the same effect as doing it tons of times.
+
+GET 		
+do not have a body, all others CAN
+They do not modify the server state at all.
+They can be considered idempotent.
+Thus, get requests are SAFE. SAFE is a technical term,
+meaning that sending a GET request has no effect on the server.
+They are used for retrieving data.
+
+PUT			
+Used to CREATE resources on the server.
+Should be idempotent.
+I.E. if you send a hundred put requests to a server,
+it should have the same request as sending hundreds.
+E.G...
+PUT /api/v2/users/alice/
+ 	{job: "Dog Walker"}
+ 	If we send 100 identical requests, it will
+ 	just keep setting her job to dog walker,
+ 	reinforcing the current state.
+You can safely resend the request if there's a mistake,
+like an error or your computer losing its connection.
+
+POST		
+	Used to create or update a resource on the server.
+	Not expected to be Idempotent.
+	It is the only one that is not expected to be Idempotent,
+	And it is the ONLY one.
+	E.g POST /api/v2/users/alice
+		{
+		 name: "Steve",
+		 job : "babysitter"
+		 }
+	Since the server is responsible for specifying the unique ID,
+	a new one will be assigned every time. It will thus create a thousand
+	babysitters named Steve. AGH!
+
+
+DELETE		
+	Should be idempotent. (It is the responsibility of the person
+	setting the server to make it idempotent.)
+	Used to delete resources, obviously.
+	DELETE /api/v2/users/alice
+	This request wants to delete alice from the database.
+	If this request were sent multiple times,
+	it would just be an attempt to delete a user who doesn't exist.
+
+NOTE: these expectations have only to do with the server side.
+
+Every time you allow a user to make a request,
+Ask a user... is it idempotent?
+If not, it should be a POST request.
+If it has no effect on the server at all, use GET.
+
+The URL should have NOUNS, not VERBS.
+	I.E. all the verbage of your request should be in the HTTP request method.
+	url should have nouns in it. The method is what we're doing, the URL is what we're doing it to.
+	POST /api/v2/users/delete/alice <--- this is NOT restful.
+	The action of "delete" is being specified in the URL.
+	It would be better if it just said:
+	/api/v2/users/alice
+
+Create
+Read
+Update
+Delete
+
+These are the four basic things a database should be able to do.
+A CRUD app is just one that's connected to a database that
+gives users the ability to do these four things.
+
+CRUD does NOT map onto REST.
+It's not about creating versus updating resources.
+It's about idempotency.
+
+RFC 2616 - request for comments
+They are the most authoritative documents
+defining web standards.
+If you're having an argument about put versus post,
+the RFC documents are THE most authoritative resource.
+
+Why not be dogmatic and apply it in every situation? 
+Here are the times to use and not use REST:
+
+Short answer:
+Use REST when it helps you make resources available to clients.
+It's a good idea to try to use it for your final project,
+especially if you want to make it available to clients.
+
+Not all HTTP verbs make sense for every resource.
+Use only the ones you need.
+
+REAL WORLD EXAMPLES:
+Dropbox violation of REST principles...
+They had a route at /delta 
+- returns data, is idempotent. 
+Used to be a GET route, and it was SAFE.
+In short, it was a very, very complicated route.
+Because GET requests have no body, all the data about the request
+had to be fit into a query string.
+It was complicated enough that sometimes the request parameters
+couldn't fit into the query string.
+So, Dropbox turned it into a post request.
+Using POST, though, people would expect that it was NOT idempotent.
+Dogmatic REST practitioners suggested that Dropbox
+use the REPORT method.
+Even though Dropbox made it idempotent on the server side,
+it violated semantics.
+REPORT method has a body but is inherently RESTful. 
+It's like the best of both worlds of GET and POST.
+Most developers haven't heard of REPORT.
+However, a lot of the software people use to make requests doesn't support
+REPORT. (considering angular $http)
+Thus, to use the Dropbox API, developers would have needed to change their technology.
+So, Dropbox decided to keep using POST requests. Defies expectations, but it was a better option.
+REPORT was technically more RESTful, but more of a headache for people trying to use the API.
